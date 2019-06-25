@@ -1,3 +1,4 @@
+//dependencies 
 require("dotenv").config();
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
@@ -8,17 +9,34 @@ var spotify = new Spotify(keys.spotify);
 
 
 //bands in town
-function bands(artist){
-    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-    axios.get(queryUrl).then(
-      function (response) {
-        var jsonData = response.data;
-        console.log(jsonData);
-  }).catch(function (err) {
-    console.log('Error occurred: ' + err);
-  })
+function bands() {
+  var queryURL = "https://rest.bandsintown.com/artists/" + process.argv[3] + "/events?app_id=codingbootcamp";
+ 
+  if (process.argv[3] !== undefined) {
+      axios.get(queryURL).then(
+        function(response) {
+        // var jsonData = response.data;
+        // console.log(jsonData);
 
- }
+      if (response.data.length === 0) {
+        console.log("No concerts available at the time.");
+      } else {
+        for (var i in response.data) {
+          console.log("Venue: " + response.data[i].venue.name);
+          console.log("Location: " + response.data[i].venue.city + ", " + response.data[i].venue.region);
+          console.log("Event Date: " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
+          console.log("---");
+          }
+        }
+      }).catch(
+          function(err) {
+              console.log("Error occurred: " + err);
+          }
+      )
+  } else {
+      console.log("Please make sure you input an artist");
+  }
+}
 
 //omdb
 function movieSearch(movieName) {
@@ -47,18 +65,18 @@ function movieSearch(movieName) {
 
   //spotify 
   function song(songName){
-  spotify.search({
-     type: 'track', 
-     query: songName }, 
-     function(err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
-    }
-   
-  console.log(data);
-      
-  });
-  }
+    spotify.search({
+       type: 'track', 
+       limit: '5',
+       query: songName }) 
+       .then(function(response) {
+        console.log(JSON.stringify(response.tracks, null, 2));
+         
+            
+        });
+      }
+    
+       
 
   // do-what-it-is
   function what(){
@@ -67,26 +85,42 @@ function movieSearch(movieName) {
     })
   }
 
+  // functions to run
 function pick(caseData, functionData) {
   switch (caseData) {
-  case "concert-this":
-    bands(functionData);
-    break;
-  case "spotify-this-song":
-    song(functionData);
-    break;
-  case "movie-this":
-    movieSearch(functionData);
-    break;
-  case "do-what-it-says":
-    what();
-    break;
-  default:
-    console.log("Pick a command from the following:");
-    console.log("concert-this");
-    console.log("spotify-this");
-    console.log("movie-this");
-    console.log("do-what-it-says");
+    case "concert-this":
+      bands(functionData);
+        if (functionData === "") {
+          console.log(("no search term entered"));
+            } else {
+      bandSearch(functionData.toString());
+        }
+        break;
+    case "spotify-this-song":
+      song(functionData);
+        if (functionData === "") {
+            songSearch("the sign ace of base");
+            } else {
+        songSearch(functionData.toString());
+        }
+        break;
+    case "movie-this":
+      movieSearch(functionData);
+        if (functionData === "undefined" || functionData === "") {
+          movieSearch("mr+nobody");
+          } else {
+        movieSearch(functionData);
+         }
+        break;
+    case "do-what-it-says":
+        what();
+          break;
+    default:
+      console.log("Pick a command from the following:");
+      console.log("concert-this");
+      console.log("spotify-this");
+      console.log("movie-this");
+      console.log("do-what-it-says");
   }
 };
 
