@@ -1,5 +1,6 @@
-//dependencies 
+
 require("dotenv").config();
+//dependencies 
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var axios = require("axios");
@@ -40,6 +41,10 @@ function bands() {
 
 //omdb
 function movieSearch(movieName) {
+  if(!movieName){
+    movieName = "mr nobody";
+    movieSearch(movieName);
+  } else {
   var movieQuery = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
   axios.get(movieQuery)
   .then(
@@ -55,28 +60,46 @@ function movieSearch(movieName) {
      console.log("Language: " + response.data.Language);
      console.log("Plot: " + response.data.Plot);
      console.log("Actors: " + response.data.Actors);
+     console.log("---");
  }
+  
 ).catch(function(err) {
  if (err) {
      return console.log('Error occurred: ' + err);
  }
 })
 }
-
+}
   //spotify 
   function song(songName){
+    if(!songName){
+      songName = "The Sign by Ace of Base";
+      song(songName);
+    } else{
+
     spotify.search({
        type: 'track', 
-       limit: '5',
+       limit: '1',
        query: songName }) 
        .then(function(response) {
-        console.log(JSON.stringify(response.tracks, null, 2));
-         
-            
-        });
-      }
-    
-       
+        // console.log(JSON.stringify(response.tracks, null, 2));
+        var output = response.tracks.items;
+        for(i = 0;i < output.length; i++){
+            var artists = output[i].artists;
+            for(j=0;j<artists.length;j++){
+                console.log("Artist: " + artists[j].name);
+            }
+            console.log("Song name: " + output[i].name);
+            console.log("Spotify link: " + output[i].external_urls.spotify);
+            console.log("Album: " + output[i].album.name);
+            console.log("---");
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+    })
+  }
+}
 
   // do-what-it-is
   function what(){
@@ -90,28 +113,13 @@ function pick(caseData, functionData) {
   switch (caseData) {
     case "concert-this":
       bands(functionData);
-        if (functionData === "") {
-          console.log(("no search term entered"));
-            } else {
-      bandSearch(functionData.toString());
-        }
         break;
     case "spotify-this-song":
       song(functionData);
-        if (functionData === "") {
-            songSearch("the sign ace of base");
-            } else {
-        songSearch(functionData.toString());
-        }
         break;
     case "movie-this":
       movieSearch(functionData);
-        if (functionData === "undefined" || functionData === "") {
-          movieSearch("mr+nobody");
-          } else {
-        movieSearch(functionData);
-         }
-        break;
+      break;
     case "do-what-it-says":
         what();
           break;
