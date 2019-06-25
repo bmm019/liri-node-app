@@ -14,8 +14,8 @@ function bands(artist){
       function (response) {
         var jsonData = response.data;
         console.log(jsonData);
-  }).catch(function (error) {
-    console.log("Search Term Not Found");
+  }).catch(function (err) {
+    console.log('Error occurred: ' + err);
   })
 
  }
@@ -26,10 +26,24 @@ function movieSearch(movieName) {
   axios.get(movieQuery)
   .then(
     function(response) {
-      var jsonData = response.data;
-      console.log(jsonData)
-    })
-  }
+      // var jsonData = response.data;
+      // console.log(jsonData);
+     //log all movie info
+     console.log("Title: " + response.data.Title);
+     console.log("Released: " + response.data.Year);
+     console.log("IMDB Rating: " + response.data.imdbRating);
+     console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+     console.log("Country Produced: " + response.data.Country);
+     console.log("Language: " + response.data.Language);
+     console.log("Plot: " + response.data.Plot);
+     console.log("Actors: " + response.data.Actors);
+ }
+).catch(function(err) {
+ if (err) {
+     return console.log('Error occurred: ' + err);
+ }
+})
+}
 
   //spotify 
   function song(songName){
@@ -53,7 +67,7 @@ function movieSearch(movieName) {
     })
   }
 
-var pick = function(caseData, functionData) {
+function pick(caseData, functionData) {
   switch (caseData) {
   case "concert-this":
     bands(functionData);
@@ -68,13 +82,17 @@ var pick = function(caseData, functionData) {
     what();
     break;
   default:
-    console.log("LIRI doesn't know that");
+    console.log("Pick a command from the following:");
+    console.log("concert-this");
+    console.log("spotify-this");
+    console.log("movie-this");
+    console.log("do-what-it-says");
   }
 };
 
 
 // Function which takes in command line arguments and executes correct function accordingly
-var runThis = function(argOne, argTwo) {
+function runThis(argOne, argTwo) {
   pick(argOne, argTwo);
 };
 
