@@ -1,5 +1,7 @@
 # LIRI
-LIRI (Language Interpretation and Recognition Interface) is a command line node application that takes in commands for concerts, songs, and movies, and returns the corresponding information.
+ ### Language Interpretation and Recognition Interface) 
+ 
+ LIRI is a command line node application that takes in commands for concerts, movies, and songs, and displays the corresponding information.
 <br />
 
 The commands are as follows:
