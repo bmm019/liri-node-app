@@ -1,4 +1,4 @@
-
+//storees spotify info
 require("dotenv").config();
 //dependencies 
 var keys = require("./keys.js");
@@ -66,7 +66,7 @@ function movieSearch(movieName) {
 ).catch(function(err) {
  if (err) {
      return console.log('Error occurred: ' + err);
- }
+ } 
 })
 }
 }
@@ -79,7 +79,7 @@ function movieSearch(movieName) {
 
     spotify.search({
        type: 'track', 
-       limit: '1',
+       limit: '5',
        query: songName }) 
        .then(function(response) {
         // console.log(JSON.stringify(response.tracks, null, 2));
@@ -101,14 +101,22 @@ function movieSearch(movieName) {
   }
 }
 
-  // do-what-it-is
-  function what(){
-    fs.readFile("random.txt", "utf8", function(err, data){
-      console.log(data)
-    })
-  }
 
-  // functions to run
+  // do-what-it-says
+  function what(){
+    fs.readFile("random.txt", "utf8", function (error, data) {
+      console.log(data)
+      let dataArr = data.split(',')
+
+      if (dataArr.length == 2) {
+          pick(dataArr[0], dataArr[1])
+      } else if (dataArr.length == 1) {
+          pick(dataArr[0])
+      }
+  })
+}
+
+  // functions to make program work
 function pick(caseData, functionData) {
   switch (caseData) {
     case "concert-this":
